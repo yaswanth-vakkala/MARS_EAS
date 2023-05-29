@@ -3,15 +3,33 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 // import TransactionChart from '../components/TransactionChart';
 import ExpenseForm from '../components/ExpenseForm';
-import ExpenseList from '../components/ExpenseList';
+import EmployeeExpenseList from '../components/EmployeeExpenseList';
+import DataList from '../components/DataList';
+import { useSelector } from 'react-redux';
+import { useOutletContext, useNavigate } from 'react-router-dom';
+import HRExpenseList from '../components/HRExpenseList';
+import DirectorExpenseList from '../components/DirectorExpenseList';
+import FinanceDepartmentExpenseList from '../components/FinanceDepartmentExpenseList';
 
 export default function Home() {
-  const [transactions, setTransactions] = useState([]);
+  const [expenses, setExpenses] = useState([]);
   const [editTransaction, setEditTransaction] = useState({});
+  const navigate = useNavigate();
+  const currentUser = useSelector((storeState) => storeState.auth.user);
+  const currentUserType = currentUser.user.userType;
+
+  // const [currentUser] = useOutletContext();
+  // var currentUser = GetCurrentUser();
+  // console.log(currentUser);
 
   useEffect(() => {
     fetchExpenses();
   }, []);
+
+  async function GetCurrentUser() {
+    const currentUser = await useSelector((storeState) => storeState.auth.user);
+    return currentUser;
+  }
 
   async function fetchExpenses() {
     const token = Cookies.get('token');
@@ -21,21 +39,29 @@ export default function Home() {
       },
     });
     const { data } = await res.json();
-    setTransactions(data);
+    setExpenses(data);
   }
 
   return (
     <>
-      <ExpenseForm
-        fetchExpenses={fetchExpenses}
-        editTransaction={editTransaction}
-      />
+      {currentUserType === 'Employee' && (
+        <ExpenseForm
+          fetchExpenses={fetchExpenses}
+          editTransaction={editTransaction}
+        />
+      )}
+      {currentUserType === 'Employee' && (
+        <EmployeeExpenseList
+          data={expenses}
+          fetchExpenses={fetchExpenses}
+          setEditTransaction={setEditTransaction}
+        />
+      )}
+      {currentUserType === 'HR' && <HRExpenseList />}
+      {currentUserType === 'Director' && <DirectorExpenseList />}
+      {currentUserType === 'FinanceDept' && <FinanceDepartmentExpenseList />}
 
-      <ExpenseList
-        data={transactions}
-        fetchExpenses={fetchExpenses}
-        setEditTransaction={setEditTransaction}
-      />
+      {/* <DataList data={expenses} fetchExpenses={fetchExpenses} /> */}
     </>
   );
 }

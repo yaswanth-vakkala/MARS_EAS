@@ -1,12 +1,65 @@
 import Expense from '../models/Expense.js';
 
+export const getHistory = async (req, res) => {
+  if (req.user.userType === 'HR') {
+    const transactions = await Expense.find({
+      currentStatus: {
+        $in: [
+          'EmployeeRequested',
+          'HRApproved',
+          'DirectorApproved',
+          'FinanceDepartmentApproved',
+        ],
+      },
+      status: { $in: ['Accepted', 'Rejected', 'InProcess'] },
+    });
+    res.status(200).json({ data: transactions });
+  } else if (req.user.userType === 'Director') {
+    const transactions = await Expense.find({
+      currentStatus: {
+        $in: ['HRApproved', 'DirectorApproved', 'FinanceDepartmentApproved'],
+      },
+      status: { $in: ['Accepted', 'Rejected', 'InProcess'] },
+    });
+    res.status(200).json({ data: transactions });
+  } else if (req.user.userType === 'FinanceDept') {
+    const transactions = await Expense.find({
+      currentStatus: {
+        $in: ['DirectorApproved', 'FinanceDepartmentApproved'],
+      },
+      status: { $in: ['Accepted', 'Rejected'] },
+    });
+    res.status(200).json({ data: transactions });
+  }
+};
+
 export const index = async (req, res) => {
   // const result = await Expense.find();
   // res.status(200).json({ data: result });
-  const transactions = await Expense.find({ user_id: req.user._id }).sort({
-    createdAt: -1,
-  });
-  res.status(200).json({ data: transactions });
+  if (req.user.userType === 'Employee') {
+    const transactions = await Expense.find({ user_id: req.user._id }).sort({
+      createdAt: -1,
+    });
+    res.status(200).json({ data: transactions });
+  } else if (req.user.userType === 'HR') {
+    const transactions = await Expense.find({
+      currentStatus: 'EmployeeRequested',
+      status: 'InProcess',
+    });
+    res.status(200).json({ data: transactions });
+  } else if (req.user.userType === 'Director') {
+    const transactions = await Expense.find({
+      currentStatus: 'HRApproved',
+      status: 'InProcess',
+    });
+    res.status(200).json({ data: transactions });
+  } else if (req.user.userType === 'FinanceDept') {
+    const transactions = await Expense.find({
+      currentStatus: 'DirectorApproved',
+      status: 'InProcess',
+    });
+    res.status(200).json({ data: transactions });
+  }
 
   // const demo = await Expense.aggregate([
   //   {

@@ -11,7 +11,7 @@ import User from '../models/User.js';
 // ];
 
 export const register = async (req, res) => {
-  const { email, password, firstName, lastName, empId } = req.body;
+  const { email, password, firstName, lastName, userId, userType } = req.body;
 
   const userExists = await User.findOne({ email });
   if (userExists) {
@@ -29,7 +29,8 @@ export const register = async (req, res) => {
     password: hashedPassword,
     firstName,
     lastName,
-    empId,
+    userId,
+    userType,
   });
   await user.save();
   res.status(201).json({ message: 'User is created' });

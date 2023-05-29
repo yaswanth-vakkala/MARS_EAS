@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import CheckAuth from './utils/CheckAuth';
 import Guest from './utils/Guest';
+import History from './pages/History';
 
 export default createBrowserRouter([
   {
@@ -15,6 +16,14 @@ export default createBrowserRouter([
         element: (
           <CheckAuth>
             <Home />
+          </CheckAuth>
+        ),
+      },
+      {
+        path: '/expense/history',
+        element: (
+          <CheckAuth>
+            <History />
           </CheckAuth>
         ),
       },

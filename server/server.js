@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import passport from 'passport';
 import passportConfig from './config/passport.js';
-import connect from './database/mongdb.js';
+import connect from './database/mongodb.js';
 import routes from './routes/index.js';
 
 dotenv.config();

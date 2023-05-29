@@ -31,9 +31,14 @@ export default function ButtonAppBar() {
           </Typography>
 
           {isAuthenticated && (
-            <Button color="inherit" onClick={_logout}>
-              Logout
-            </Button>
+            <>
+              <Link to="/expense/history" className="text-white">
+                HISTORY
+              </Link>
+              <Button color="inherit" onClick={_logout}>
+                Logout
+              </Button>
+            </>
           )}
 
           {!isAuthenticated && (

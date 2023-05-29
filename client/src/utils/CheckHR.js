@@ -3,6 +3,5 @@ import { Navigate } from 'react-router-dom';
 
 export default function CheckAuth({ children }) {
   const auth = useSelector((state) => state.auth);
-  console.log(auth);
-  return auth.isAuthenticated ? children : <Navigate to="/login" />;
+  return auth.user.userType === 'HR' ? children : <Navigate to="/login" />;
 }

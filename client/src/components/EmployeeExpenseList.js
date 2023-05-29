@@ -13,7 +13,7 @@ import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
 import * as React from 'react';
 // import { useSelector } from "react-redux";
-export default function ExpenseList({
+export default function EmployeeExpenseList({
   data,
   fetchExpenses,
   setEditTransaction,
